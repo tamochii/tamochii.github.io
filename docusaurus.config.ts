@@ -25,6 +25,8 @@ const config: Config = {
   organizationName: 'tamochii', // Usually your GitHub org/user name.
   projectName: 'tamochii.github.io', // Usually your repo name.
 
+  deploymentBranch: 'gh-pages',
+  trailingSlash: false,
   onBrokenLinks: 'throw',
 
   // Even if you don't use internationalization, you can use this field to set
