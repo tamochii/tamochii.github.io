@@ -1,3 +1,3 @@
-# Website
+# tamochi's doc
 
-This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
+这是我的文档库站点，用脸书开源的docusaurus程序构建，用于记录我在互联网技术、硬件嵌入式技术等方向的知识。
