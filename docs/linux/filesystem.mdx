@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-# 探索 Linux 文件系统：一切皆文件
+# 文件系统
 
 在上一篇简介中，我们提到了 Linux 的一个核心哲学——“一切皆文件”。这个概念是理解 Linux 工作方式的基石。本篇教程将带你深入探索 Linux 的文件系统结构，了解那些神秘的目录都是做什么用的。
 
@@ -12,7 +12,29 @@ sidebar_position: 2
 
 想象一下，整个文件系统就像一棵倒置的树，` / ` 就是树根，所有其他目录都是从这个根上长出的分支。
 
-![Linux 文件系统树](/img/docusaurus/linux-filesystem-tree.png)
+```bash
+/
+├── bin/
+├── boot/
+├── dev/
+├── etc/
+├── home/
+│   └── [username]/
+├── lib/
+├── media/
+├── mnt/
+├── opt/
+├── proc/
+├── root/
+├── sbin/
+├── sys/
+├── tmp/
+├── usr/
+│   ├── bin/
+│   ├── lib/
+│   └── share/
+└── var/
+```
 
 下面，我们来认识一下这棵“树”上一些最重要的目录。
 
