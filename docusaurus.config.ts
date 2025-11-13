@@ -92,7 +92,6 @@ const config: Config = {
           label: '📝笔记',
         },
         { to: '/pi', label: '🍓树莓派', position: 'right' },
-        { to: '/about', label: '🛌休息', position: 'right' },
         {
           href: 'https://github.com/tamochii/tamochii.github.io',
           label: '📁项目仓库',
