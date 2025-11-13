@@ -1,0 +1,24 @@
+raspberry-pi:
+  label: Raspberry Pi
+  permalink: /raspberry-pi
+  description: Raspberry Pi related posts
+
+linux:
+  label: Linux
+  permalink: /linux
+  description: Linux related posts
+
+cloud:
+  label: Cloud
+  permalink: /cloud
+  description: Cloud computing and services
+
+opencv:
+  label: OpenCV
+  permalink: /opencv
+  description: OpenCV library and computer vision tutorials
+
+computer-vision:
+  label: Computer Vision
+  permalink: /computer-vision
+  description: Computer vision topics and projects

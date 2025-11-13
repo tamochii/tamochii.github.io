@@ -1,0 +1,51 @@
+---
+sidebar_position: 3
+---
+
+# 编写 Dockerfile
+
+Dockerfile 是一个文本文档，其中包含用户可以在命令行上调用以组装映像的所有命令。
+
+## 常用指令
+
+- `FROM`: 指定基础镜像。
+- `WORKDIR`: 设置工作目录。
+- `COPY`: 复制文件或目录到容器中。
+- `RUN`: 在镜像构建时执行命令。
+- `CMD`: 提供容器启动时默认执行的命令。
+- `EXPOSE`: 声明容器运行时监听的端口。
+
+## 示例 Dockerfile
+
+这是一个简单的 Node.js 应用的 Dockerfile 示例。
+
+```dockerfile
+# 使用官方的 Node.js 16 镜像作为基础镜像
+FROM node:16
+
+# 在容器中创建并设置工作目录
+WORKDIR /usr/src/app
+
+# 复制 package.json 和 package-lock.json
+COPY package*.json ./
+
+# 安装项目依赖
+RUN npm install
+
+# 复制项目源代码
+COPY . .
+
+# 暴露应用程序的端口
+EXPOSE 3000
+
+# 启动应用的命令
+CMD [ "node", "server.js" ]
+```
+
+## 构建镜像
+
+使用 `docker build` 命令从 Dockerfile 构建镜像。
+
+```bash
+docker build -t my-node-app .
+```
