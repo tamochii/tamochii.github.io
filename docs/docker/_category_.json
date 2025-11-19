@@ -1,8 +1,0 @@
-{
-  "label": "Docker",
-  "position": 3,
-  "link": {
-    "type": "generated-index",
-    "description": "学习Docker的基础知识，掌握容器化应用的构建和管理。"
-  }
-}
