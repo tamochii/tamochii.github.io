@@ -1,24 +1,9 @@
-raspberry-pi:
-  label: Raspberry Pi
-  permalink: /raspberry-pi
-  description: 树莓派相关文章与教程、项目分享
+frp:
+  label: FRP
+  permalink: /frp
+  description: FRP内网穿透工具配置与使用教程
 
-raspberry-pi-tutorials:
-  label: Raspberry Pi Tutorials
-  permalink: /raspberry-pi/tutorials
-  description: 入门与进阶教程、示例代码与配置指南
-
-raspberry-pi-projects:
-  label: Raspberry Pi Projects
-  permalink: /raspberry-pi/projects
-  description: 基于树莓派的实作项目、工程案例与经验分享
-
-gpio:
-  label: GPIO
-  permalink: /gpio
-  description: GPIO 引脚、外设驱动与硬件控制
-
-raspberry-pi-os:
-  label: OS & Images
-  permalink: /raspberry-pi/os
-  description: 操作系统、镜像制作与性能调优
+hello:
+  label: Hello
+  permalink: /hello
+  description: 从这里开始树莓派之旅
