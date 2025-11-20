@@ -52,6 +52,7 @@ const config: Config = {
           path: './pi',
           routeBasePath: '/pi',
           showReadingTime: true,
+          blogSidebarCount: 'ALL',  // 显示全部（或填数字）
           feedOptions: {
             type: ['rss', 'atom'],
             xslt: true,
