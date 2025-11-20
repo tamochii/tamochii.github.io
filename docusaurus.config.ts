@@ -120,7 +120,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Built with Docusaurus.<br/><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">鄂ICP备2025111741号-2</a>`,
+      copyright: `版权所有 © ${new Date().getFullYear()} doc.tamochi.cn <br/><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">鄂ICP备2025111741号-2</a>`,
     },
     prism: {
       theme: prismThemes.github,
