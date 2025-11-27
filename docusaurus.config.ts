@@ -107,7 +107,7 @@ const config: Config = {
           title: 'Links',
           items: [
             {
-              label: 'tamochi\'s home',
+              label: 'WWW',
               href: 'https://www.tamochi.cn',
             },
             {

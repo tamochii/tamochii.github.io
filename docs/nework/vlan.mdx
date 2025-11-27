@@ -1,5 +1,142 @@
 ---
 sidebar_position: 2
 ---
-vlan 全称 Virtual Local Area Network，即“虚拟局域网”，是一种通过逻辑划分网络的方法。
-它允许在同一物理网络基础设施上创建多个独立的广播域，从而实现网络的隔离和管理。
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# VLAN 虚拟局域网
+
+在构建现代企业网络时，我们经常听到 "VLAN" 这个词。它是网络工程师工具箱中最基础但也最重要的工具之一。
+
+本文将带您深入了解 VLAN 的核心概念、工作原理以及为何它是网络安全的基石。
+
+## 什么是 VLAN？
+
+**VLAN (Virtual Local Area Network)**，即虚拟局域网，是一种将物理网络设备在逻辑上划分为多个广播域（Broadcast Domain）的技术。
+
+:::tip[简单类比]
+想象一台交换机就像一栋办公楼。
+
+* **没有 VLAN**：整栋楼是一个巨大的开放式大厅，销售部在大喊大叫时，财务部和研发部都被迫听到（广播风暴）。
+* **有了 VLAN**：我们在大厅里竖起了隔音玻璃墙。虽然大家还在同一栋楼里（同一台交换机），但销售部只能听到销售部的声音，互不干扰。
+:::
+
+### 核心区别
+
+| 特性 | 传统 LAN | VLAN |
+| :--- | :--- | :--- |
+| **隔离方式** | 物理连接限制（需要不同的交换机/路由器） | 逻辑划分（在同一台交换机上配置） |
+| **广播域** | 一个交换机通常=一个广播域 | 一个 VLAN = 一个广播域 |
+| **灵活性** | 移动用户需要重新布线 | 仅需更改软件配置 |
+| **成本** | 硬件成本高 | 硬件成本低 |
+
+---
+
+## 为什么要使用 VLAN？
+
+在扁平化网络（Flat Network）中，所有设备都在同一个广播域。随着设备数量增加，会带来以下问题，而 VLAN 正是为了解决这些问题而生：
+
+1.  **控制广播风暴 (Broadcast Control)**
+    * 如果不划分 VLAN，ARP 请求等广播包会被发送到网络上的所有端口，消耗带宽和 CPU。VLAN 将广播限制在特定 VLAN 内部。
+2.  **提高安全性 (Security)**
+    * 敏感部门（如财务部）的数据不应被访客网络（Guest）嗅探。VLAN 实现了二层（Layer 2）隔离。不同 VLAN 间的通信必须经过三层设备，便于实施防火墙策略。
+3.  **部门逻辑分组 (Logical Grouping)**
+    * 无论员工的物理座位在哪里，只要端口划入 HR VLAN，他们就在同一个逻辑网络中。
+
+---
+
+## VLAN 的工作原理：802.1Q
+
+交换机内部是如何区分这个数据帧是属于 VLAN 10 还是 VLAN 20 的呢？答案是 **打标签 (Tagging)**。
+
+### IEEE 802.1Q 帧结构
+
+这是最通用的封装协议（Dot1q）。当数据帧在交换机之间传输时，会在以太网帧头中插入一个 **4 字节** 的 Tag。
+
+```text
+[ 目的MAC ] [ 源MAC ] [ 802.1Q Tag (4 Bytes) ] [ 类型/长度 ] [ 数据 Payload ]
+```
+
+### 两种关键端口类型
+
+在配置交换机时，必须区分以下两种接口模式：
+
+#### 1\. Access Port (接入端口)
+
+  * **连接对象**：终端设备（PC, 打印机）。
+  * **行为**：
+      * **发送方向**：交换机发给电脑的数据**不带标签**（电脑通常看不懂标签）。
+      * **接收方向**：接收到电脑的数据后，交换机打上该端口默认的 VLAN 标签。
+  * **归属**：只能属于一个 VLAN。
+
+#### 2\. Trunk Port (中继端口)
+
+  * **连接对象**：交换机与交换机，或交换机与路由器之间。
+  * **行为**：允许**多个 VLAN** 的流量通过。数据帧**带有标签**，以便对端交换机识别数据属于哪个 VLAN。
+
+-----
+
+## 典型应用场景图解
+
+  * **PC A (Sales)** 连接在端口 1 (VLAN 10)
+  * **PC B (HR)** 连接在端口 2 (VLAN 20)
+  * **PC C (Sales)** 连接在另一台交换机的端口 (VLAN 10)
+
+当 PC A 发送数据给 PC C 时，数据通过 Trunk 链路传输，带有 VLAN 10 的标签，因此只有 VLAN 10 的端口能收到。
+
+-----
+
+## 基础配置示例 (Cisco IOS)
+
+以下是在思科设备上配置 VLAN 的基础命令。
+
+\<Tabs\>
+\<TabItem value="create" label="创建 VLAN" default\>
+
+```cisco
+Switch> enable
+Switch# configure terminal
+
+! 创建 VLAN 10 并命名
+Switch(config)# vlan 10
+Switch(config-vlan)# name Sales
+
+! 创建 VLAN 20 并命名
+Switch(config)# vlan 20
+Switch(config-vlan)# name IT_Dept
+```
+
+\</TabItem\>
+\<TabItem value="access" label="配置 Access 端口"\>
+
+```cisco
+! 将接口 GigabitEthernet0/1 分配给 VLAN 10
+Switch(config)# interface gigabitEthernet 0/1
+Switch(config-if)# switchport mode access
+Switch(config-if)# switchport access vlan 10
+Switch(config-if)# no shutdown
+```
+
+\</TabItem\>
+\<TabItem value="trunk" label="配置 Trunk 端口"\>
+
+```cisco
+! 配置上行链路为 Trunk 模式，允许所有 VLAN 通过
+Switch(config)# interface gigabitEthernet 0/24
+Switch(config-if)# switchport trunk encapsulation dot1q
+Switch(config-if)# switchport mode trunk
+! (可选) 仅允许特定 VLAN
+Switch(config-if)# switchport trunk allowed vlan 10,20
+```
+
+\</TabItem\>
+\</Tabs\>
+
+## 总结
+
+VLAN 是构建安全、高效、可扩展网络的第一步。它通过将物理网络虚拟化，打破了地理位置的限制。
+
+  * **记住**：VLAN 隔离二层广播。
+  * **进阶**：如果需要 VLAN 10 和 VLAN 20 通信，你需要配置 **VLAN 间路由 (Inter-VLAN Routing)**，通常使用“单臂路由” (Router on a Stick) 或三层交换机 (SVI) 来实现。
+
+<!-- end list -->
