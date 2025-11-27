@@ -104,11 +104,11 @@ const config: Config = {
       style: 'dark',
       links: [
         {
-          title: '链接',
+          title: 'Links',
           items: [
             {
-              label: 'Blog',
-              href: 'https://blog.tamochi.cn',
+              label: 'tamochi\'s home',
+              href: 'https://www.tamochi.cn',
             },
             {
               label: 'GitHub',
