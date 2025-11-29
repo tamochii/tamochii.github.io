@@ -1,0 +1,8 @@
+{
+  "label": "Homelab",
+  "position": 4,
+  "link": {
+    "type": "generated-index",
+    "description": "这里记录着我HomeLab的搭建过程和软硬件的选择。"
+  }
+}

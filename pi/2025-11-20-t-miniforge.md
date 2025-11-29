@@ -2,7 +2,6 @@
 slug: miniforge
 title: miniforge-安装指南
 authors: [tamochi]
-tags: [miniforge,conda,python]
 ---
 
 本文介绍如何在树莓派上安装 Miniforge，开启python编程之旅。

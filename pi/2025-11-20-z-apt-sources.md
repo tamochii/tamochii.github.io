@@ -2,7 +2,6 @@
 slug: pi-aptsources
 title: apt-软件源配置
 authors: [tamochi]
-tags: [apt]
 ---
 在大陆的网络环境下，默认的 APT 软件源可能会导致软件包下载速度较慢，甚至无法连接。为了提升软件包管理的效率，建议将 APT 软件源更换为国内的镜像源。  
 我当前的系统版本号是2025-10-01-raspios-trixie-arm64

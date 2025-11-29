@@ -1,9 +1,0 @@
-frp:
-  label: FRP
-  permalink: /frp
-  description: FRP内网穿透工具配置与使用教程
-
-hello:
-  label: Hello
-  permalink: /hello
-  description: 从这里开始树莓派之旅
