@@ -1,0 +1,108 @@
+---
+sidebar_position: 2
+---
+# Access 与 Trunk 
+
+在二层网络架构设计中，交换机端口模式（Port Mode）定义了数据帧在通过接口时的封装与解封装行为。理解 **Access（接入模式）** 与 **Trunk（中继模式/干道模式）** 的区别，不仅关乎 VLAN 的互通性，更是深入理解 IEEE 802.1Q 协议、Native VLAN 以及二层网络安全的基础。
+
+本文将从协议层面和数据转发逻辑出发，深入解析这两种端口模式的工作原理。
+
+## 1. 核心背景：IEEE 802.1Q 协议与帧标记
+
+要理解端口模式，首先必须理解 **Tagging（标记）** 机制。标准以太网帧（Ethernet II）并不包含 VLAN 信息。为了在交换机之间传递 VLAN 归属信息，IEEE 制定了 **802.1Q** 标准。
+
+802.1Q 协议会在原始以太网帧的 **源 MAC 地址 (Source MAC)** 和 **类型/长度 (Type/Length)** 字段之间插入一个 **4字节** 的 Tag 字段：
+
+| 目标 MAC (6B) | 源 MAC (6B) | **802.1Q Tag (4B)** | EtherType (2B) | Payload ... | FCS (4B) |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+
+这 4 个字节包含关键信息：
+* **TPID (Tag Protocol Identifier)**: 固定值 `0x8100`，表明这是一个 802.1Q 帧。
+* **TCI (Tag Control Information)**: 包含优先级（CoS）和 **VID (VLAN ID)**。VID 占据 12 位，支持 4096 个 VLAN。
+
+**Access 与 Trunk 的核心区别，就在于它们如何处理这个 Tag 字段。**
+
+---
+
+## 2. Access 接口：无标记帧的处理逻辑
+
+**Access 接口**通常连接不支持 802.1Q 协议的终端设备（如 PC、打印机、普通服务器）。其核心特征是处理 **Untagged Frames（无标记帧）**。
+
+### 2.1 入站逻辑 (Ingress)
+当数据帧进入 Switch 的 Access 端口时：
+1.  **接收**：交换机接收到一个标准的以太网帧（无 Tag）。
+2.  **打标**：交换机依据该端口配置的 **PVID (Port VLAN ID)**，在内部将该数据帧标记为属于该 VLAN。
+3.  **转发**：数据帧带着这个内部标记在交换机背板中进行查表转发。
+    * *注：如果 Access 端口收到一个带 Tag 的帧，通常会直接丢弃（除非 Tag ID 等于 PVID 且硬件支持，但属于非标准行为）。*
+
+### 2.2 出站逻辑 (Egress)
+当数据帧准备从 Access 端口发出时：
+1.  **检查**：交换机确认数据帧的 VLAN ID 是否与该端口的 PVID 一致。
+2.  **剥离**：如果一致，交换机**移除 (Strip)** 802.1Q Tag，还原为标准以太网帧。
+3.  **发送**：将干净的帧发送给终端设备。
+
+> **工程意义**：Access 端口充当了“VLAN 域”与“标准以太网域”的边界网关。终端设备完全感知不到 VLAN 的存在。
+
+---
+
+## 3. Trunk 接口：多 VLAN 传输与标记保留
+
+**Trunk 接口**用于在网络设备（Switch-to-Switch, Switch-to-Router/Firewall）之间建立链路。其核心目的是在一条物理链路上复用多个 VLAN 的流量。
+
+### 3.1 转发逻辑
+Trunk 链路默认允许所有 VLAN (1-4094) 通过（可通过配置 Pruning 进行修剪）。
+* **出站 (Egress)**：当数据帧离开 Trunk 端口时，交换机**保持**或**插入** 802.1Q Tag，确保接收端设备能识别该帧所属的 VLAN。
+* **入站 (Ingress)**：接收端交换机解析 Tag 中的 VID，将数据帧放入对应的 VLAN 转发表中进行处理。
+
+### 3.2 关键概念：Native VLAN (本征 VLAN)
+这是 Trunk 模式中极其重要的一个特殊概念。为了保证与不支持 VLAN 的旧设备兼容，或者处理控制平面流量（如 STP BPDUs, CDP, DTP），Trunk 链路定义了一个 **Native VLAN**（默认为 VLAN 1）。
+
+**行为规则：**
+1.  **出站时**：如果数据帧属于 Native VLAN，交换机**不打 Tag**，直接以 Untagged 形式发送。
+2.  **入站时**：如果 Trunk 端口收到一个 **Untagged** 帧，交换机会直接将其归入 Native VLAN。
+
+> **安全风险**：Native VLAN 配置不当（如两端不匹配）会导致 **VLAN Hopping（VLAN 跳跃攻击）** 或生成树协议（STP）环路。工程最佳实践通常建议修改默认的 Native VLAN ID，并尽量不使用它传输用户数据。
+
+---
+
+## 4. 技术对比摘要
+
+下表从协议与行为层面对比两种模式：
+
+| 特性维度 | Access (接入模式) | Trunk (中继/干道模式) |
+| :--- | :--- | :--- |
+| **链路类型** | Access Link | Trunk Link (802.1Q) |
+| **PVID / Native VLAN** | **PVID**：决定端口归属，所有进出流量均受此 ID 约束。 | **Native VLAN**：仅决定 Untagged 流量的归属，其他流量均携带 Tag。 |
+| **帧格式 (入站)** | 接收 Untagged 帧 (丢弃 Tagged 帧) | 接收 Tagged 帧 + Untagged 帧 (归入 Native VLAN) |
+| **帧格式 (出站)** | 发送 Untagged 帧 (剥离 Tag) | 发送 Tagged 帧 (Native VLAN 除外) |
+| **典型应用场景** | 终端接入、服务器接入 | 汇聚上联、核心互联、单臂路由 (ROAS)、虚拟化宿主机 (ESXi) |
+
+---
+
+## 5. 特殊场景：Voice VLAN (混合应用)
+
+在部署 IP 电话 (VoIP) 时，通常会遇到一个特殊的“伪 Trunk”场景。
+IP 电话通常自带一个 Mini-Switch，连接 PC 和 墙面插座。端口需要同时传输：
+1.  **语音流量**：需要高优先级，通常带 Tag (Voice VLAN)。
+2.  **PC 数据流量**：通常不带 Tag (Data VLAN)。
+
+此时，交换机端口虽然配置为 Access 模式，但通过配置 `switchport voice vlan`，它实际上工作在一种**混合状态**：允许一个 Tagged VLAN (语音) 和一个 Untagged VLAN (数据) 同时存在。
+
+---
+
+## 6. 最佳实践与安全建议
+
+在企业级网络配置中，遵循以下原则：
+
+1.  **显式配置模式**：不要依赖 DTP (Dynamic Trunking Protocol) 自动协商。应强制指定 `switchport mode access` 或 `switchport mode trunk`。
+    * *原因：防止攻击者伪造 DTP 报文将端口协商为 Trunk，从而窃听所有 VLAN 流量。*
+2.  **VLAN 修剪 (Pruning)**：在 Trunk 上使用 `switchport trunk allowed vlan` 命令，仅允许必要的 VLAN 通过。
+    * *原因：减少不必要的广播流量，提升带宽利用率和安全性。*
+3.  **管理 Native VLAN**：将 Native VLAN 修改为非默认值（如 VLAN 999），且不用于传输业务数据。
+4.  **未使用端口处理**：将所有未使用的端口划入一个“黑洞 VLAN”并 Shutdown。
+
+---
+
+### 结语
+
+Access 与 Trunk 并非简单的连接方式区别，而是二层以太网中处理数据帧封装的两种基本逻辑。Access 负责将非标准化设备接入 VLAN 逻辑域，而 Trunk 负责在逻辑域内部扩展 VLAN 的边界。深入理解 802.1Q 帧结构与 Native VLAN 机制，是进行网络排错与架构优化的必备能力。
