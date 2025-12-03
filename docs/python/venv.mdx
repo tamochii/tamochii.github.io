@@ -1,0 +1,145 @@
+---
+sidebar_position: 1
+---
+
+# venv
+
+`venv` 是 Python 标准库中用于创建轻量级“虚拟环境”的模块。每个虚拟环境都有其自己独立的 Python 二进制文件（与用于创建该环境的二进制文件版本相匹配），并且可以拥有自己独立的一套安装在 `site-packages` 目录中的 Python 包。
+
+## 为什么需要 venv？
+
+在开发 Python 项目时，不同的项目可能依赖于不同版本的第三方库。如果将所有库都安装在全局 Python 环境中，很容易导致版本冲突（Dependency Hell）。`venv` 允许你为每个项目创建一个隔离的环境，从而解决这个问题。
+
+## 核心特性
+
+*   **隔离性**：每个环境独立，互不干扰。
+*   **轻量级**：创建速度快，占用空间相对较小（主要通过符号链接或复制必要的二进制文件）。
+*   **标准库内置**：Python 3.3+ 版本自带，无需额外安装。
+*   **无需管理员权限**：用户可以在自己的目录中自由创建和管理环境。
+*   **版本固定**：虚拟环境绑定创建它的 Python 版本，不会随系统 Python 升级而自动改变，保证环境稳定性。
+
+## 基本用法
+
+### 1. 创建虚拟环境
+
+在你的项目目录下，运行以下命令来创建一个名为 `venv`（也可以叫 `.venv` 或 `env`）的虚拟环境目录：
+
+```bash
+# Windows
+python -m venv venv
+
+# macOS / Linux
+python3 -m venv venv
+```
+
+这将在当前目录下生成一个 `venv` 文件夹，其中包含 Python 解释器的副本、标准库和各种支持文件。
+
+### 2. 激活虚拟环境
+
+创建后，你需要激活环境才能使用它。激活后，你的 shell 提示符通常会发生变化，显示当前环境的名称。
+
+*   **Windows (CMD):**
+    ```cmd
+    venv\Scripts\activate.bat
+    ```
+
+*   **Windows (PowerShell):**
+    ```powershell
+    venv\Scripts\Activate.ps1
+    ```
+    *注意：如果遇到权限错误，可能需要先执行 `Set-ExecutionPolicy RemoteSigned`。*
+
+*   **macOS / Linux (Bash/Zsh):**
+    ```bash
+    source venv/bin/activate
+    ```
+
+### 3. 在环境中安装包
+
+激活环境后，使用 `pip` 安装的任何包都会被放置在虚拟环境的 `site-packages` 目录中，而不会影响全局 Python 环境。
+
+```bash
+pip install requests
+```
+
+### 4. 退出虚拟环境
+
+当你完成工作后，可以通过以下命令退出虚拟环境，恢复到全局环境：
+
+```bash
+deactivate
+```
+
+## 进阶用法与选项
+
+`venv` 命令提供了一些有用的参数来定制环境的创建：
+
+### 访问系统包 (`--system-site-packages`)
+
+默认情况下，虚拟环境是完全隔离的，看不到全局安装的包。如果你希望虚拟环境能使用系统全局安装的包（例如一些难以编译的大型科学计算库），可以使用此参数：
+
+```bash
+python -m venv venv --system-site-packages
+```
+
+### 重置环境 (`--clear`)
+
+如果目录中已存在虚拟环境，使用此参数可以在创建新环境前清空该目录：
+
+```bash
+python -m venv venv --clear
+```
+
+### 升级环境 (`--upgrade`)
+
+如果系统 Python 升级了（例如从 3.9.1 到 3.9.2），你可以使用此参数来更新虚拟环境中的二进制文件，而无需重新安装所有包：
+
+```bash
+python -m venv venv --upgrade
+```
+
+## 目录结构解析
+
+了解虚拟环境的内部结构有助于排查问题。一个标准的 `venv` 目录通常包含：
+
+*   **`pyvenv.cfg`**：核心配置文件，记录了用于创建该环境的 Python 路径（`home`）和版本信息。
+*   **`bin` (macOS/Linux) 或 `Scripts` (Windows)**：存放可执行文件。
+    *   包含 `python` 解释器的副本（或软链接）。
+    *   包含 `pip`、`activate` 脚本等。
+    *   **关键点**：当你运行这里的 `python` 时，它会自动将 `sys.prefix` 指向虚拟环境目录。
+*   **`lib` (macOS/Linux) 或 `Lib` (Windows)**：
+    *   包含 `site-packages` 目录，这是 `pip install` 安装第三方库的实际位置。
+
+## 常见问题与注意事项
+
+1.  **不可移动性**：虚拟环境中的脚本通常包含硬编码的绝对路径。**不要直接移动或重命名虚拟环境文件夹**。如果需要移动，建议删除旧环境并在新位置重新创建。
+2.  **Python 版本管理**：`venv` 不能帮你安装不同版本的 Python（如 3.8, 3.10）。它只能基于你当前运行的 `python` 命令的版本来创建环境。如果你需要管理多个 Python 版本，建议配合 `pyenv` 使用。
+3.  **与其他工具对比**：
+    *   **venv**：官方原生，轻量，适合简单项目。
+    *   **Poetry / Pipenv**：集成了依赖管理和虚拟环境管理，适合复杂的应用开发。
+    *   **Conda**：适合数据科学，可以管理非 Python 的二进制依赖（如 C 库）。
+
+## 常用工作流
+
+1.  **创建项目目录**：`mkdir myproject && cd myproject`
+2.  **创建虚拟环境**：`python -m venv .venv`
+3.  **激活环境**：`source .venv/bin/activate` (Linux/Mac) 或 `.venv\Scripts\activate` (Windows)
+4.  **安装依赖**：`pip install flask`
+5.  **生成依赖文件**：`pip freeze > requirements.txt`
+6.  **开发代码**...
+7.  **退出**：`deactivate`
+
+## .gitignore 配置
+
+如果你使用 Git 进行版本控制，**千万不要**将虚拟环境目录提交到仓库中。你应该在 `.gitignore` 文件中添加一行：
+
+```text
+venv/
+.venv/
+```
+
+其他开发者应该通过 `requirements.txt` 文件来构建他们自己的虚拟环境：
+
+```bash
+pip install -r requirements.txt
+```

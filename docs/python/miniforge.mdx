@@ -1,0 +1,122 @@
+---
+sidebar_position: 2
+---
+
+# Miniforge
+
+Miniforge 是一个社区驱动的、最小化的 `conda` 安装程序。它类似于 Miniconda，但默认配置为使用 `conda-forge` 频道，而不是 Anaconda 的官方默认频道。
+
+## 为什么选择 Miniforge？
+
+随着 Anaconda 商业使用条款的变更，许多企业和个人开发者转向了完全开源且无商业限制的替代方案。Miniforge 是目前最佳的选择之一。
+
+### 核心特性
+
+*   **默认使用 conda-forge**：`conda-forge` 是一个由社区维护的庞大软件包仓库，通常比官方频道更新更快，且包含更多包。
+*   **无商业许可限制**：完全免费开源，无需担心 Anaconda 的商业付费条款。
+*   **多架构支持**：对 ARM64 架构（如 Apple Silicon M1/M2/M3 芯片、Raspberry Pi）支持极佳。
+*   **集成 Mamba**：Miniforge 安装包通常包含 `mamba`，这是一个用 C++ 重写的包管理器，解析依赖的速度比标准 `conda` 快得多。
+
+## 安装教程
+
+### macOS / Linux (命令行安装)
+
+这是最通用的安装方式。
+
+1.  **下载安装脚本**：
+    访问 [Miniforge GitHub Releases](https://github.com/conda-forge/miniforge/releases) 页面，下载对应系统的脚本（通常是 `Miniforge3-$(uname)-$(uname -m).sh`）。
+
+    或者使用 `curl` / `wget`：
+
+    ```bash
+    # macOS (Apple Silicon & Intel)
+    curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-MacOSX-$(uname -m).sh"
+
+    # Linux
+    curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-$(uname -m).sh"
+    ```
+
+2.  **运行安装脚本**：
+
+    ```bash
+    bash Miniforge3-*.sh
+    ```
+
+3.  **按照提示操作**：
+    *   按 `Enter` 查看许可协议。
+    *   输入 `yes` 接受协议。
+    *   按 `Enter` 确认安装路径（默认即可）。
+    *   **关键步骤**：最后会询问是否初始化 Conda (`Do you wish the installer to initialize Miniforge3 by running conda init?`)，输入 `yes`。
+
+4.  **重启终端**：关闭并重新打开终端，或者运行 `source ~/.zshrc` (或 `~/.bashrc`)。
+
+### macOS (Homebrew)
+
+如果你使用 Homebrew，这是最简单的安装方式：
+
+```bash
+brew install miniforge
+```
+
+### Windows
+
+1.  访问 [Miniforge GitHub Releases](https://github.com/conda-forge/miniforge/releases)。
+2.  下载 `Miniforge3-Windows-x86_64.exe`。
+3.  双击运行安装程序，按照向导完成安装。建议勾选 "Add Miniforge3 to my PATH environment variable"（虽然安装程序可能标记为红色警告，但对于个人开发方便使用）。
+
+## 基本用法
+
+Miniforge 的用法与 Anaconda/Miniconda 几乎完全一致，命令也是 `conda`。如果你安装了包含 Mamba 的版本，推荐使用 `mamba` 命令来代替 `conda install` 以获得更快的速度。
+
+### 1. 环境管理
+
+```bash
+# 创建一个名为 myenv 的环境，指定 Python 版本
+conda create -n myenv python=3.10
+
+# 激活环境
+conda activate myenv
+
+# 退出环境
+conda deactivate
+
+# 列出所有环境
+conda env list
+
+# 删除环境
+conda env remove -n myenv
+```
+
+### 2. 包管理 (推荐使用 mamba)
+
+虽然 `conda install` 依然可用，但 `mamba` 在解决依赖冲突时速度极快。
+
+```bash
+# 安装包 (从 conda-forge 频道)
+mamba install pandas numpy matplotlib
+
+# 搜索包
+mamba search pytorch
+
+# 更新包
+mamba update pandas
+
+# 卸载包
+mamba remove pandas
+```
+
+### 3. 导出与重建环境
+
+```bash
+# 导出环境配置到 YAML 文件
+conda env export > environment.yml
+
+# 从 YAML 文件创建环境
+conda env create -f environment.yml
+```
+
+## 常见问题
+
+*   **与 Anaconda 共存？**：不建议同时安装 Anaconda 和 Miniforge，这会导致 `PATH` 混乱。建议卸载 Anaconda 后迁移到 Miniforge。
+*   **默认频道优先级**：Miniforge 默认将 `conda-forge` 设为最高优先级。你可以通过 `conda config --show channels` 查看。
+
