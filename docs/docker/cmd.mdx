@@ -1,0 +1,139 @@
+---
+sidebar_position: 2
+---
+
+# Docker 命令
+
+本文整理了常用的 Docker 命令，涵盖了镜像管理、容器生命周期、网络、数据卷等方面。
+
+## 帮助命令
+
+```bash
+docker version       # 显示 Docker 版本信息
+docker info          # 显示 Docker 系统信息，包括镜像和容器数
+docker --help        # 帮助命令
+```
+
+## 镜像管理 (Image)
+
+```bash
+docker images        # 列出本地主机上的镜像
+docker search <image> # 从 Docker Hub 查找镜像
+docker pull <image>  # 下载镜像
+docker rmi <image>   # 删除镜像
+docker rmi -f $(docker images -qa) # 删除所有镜像
+```
+
+## 容器生命周期 (Container)
+
+### 启动容器
+
+```bash
+docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
+
+# 常用参数：
+# --name="容器新名字": 为容器指定一个名称
+# -d: 后台运行容器，并返回容器ID
+# -i: 以交互模式运行容器，通常与 -t 同时使用
+# -t: 为容器重新分配一个伪输入终端
+# -P: 随机端口映射
+# -p: 指定端口映射，有以下四种格式
+#     ip:hostPort:containerPort
+#     ip::containerPort
+#     hostPort:containerPort
+#     containerPort
+```
+
+### 查看容器
+
+```bash
+docker ps            # 列出当前所有正在运行的容器
+docker ps -a         # 列出当前所有正在运行的容器+历史上运行过的
+docker ps -l         # 显示最近创建的容器
+docker ps -n 3       # 显示最近n个创建的容器
+docker ps -q         # 静默模式，只显示容器编号
+```
+
+### 退出容器
+
+```bash
+exit                 # 容器停止退出
+ctrl+P+Q             # 容器不停止退出
+```
+
+### 启动/停止/重启
+
+```bash
+docker start <container>   # 启动容器
+docker restart <container> # 重启容器
+docker stop <container>    # 停止容器
+docker kill <container>    # 强制停止容器
+docker rm <container>      # 删除已停止的容器
+docker rm -f <container>   # 强制删除容器
+docker rm -f $(docker ps -a -q) # 删除所有容器
+```
+
+## 容器操作与信息
+
+### 查看日志
+
+```bash
+docker logs -f -t --tail <number> <container>
+# -t: 加入时间戳
+# -f: 跟随最新的日志打印
+# --tail: 数字 显示最后多少条
+```
+
+### 查看进程
+
+```bash
+docker top <container>
+```
+
+### 查看元数据
+
+```bash
+docker inspect <container>
+```
+
+### 进入正在运行的容器
+
+```bash
+docker exec -it <container> /bin/bash  # 在容器中打开新的终端，并且可以启动新的进程
+docker attach <container>              # 直接进入容器启动命令的终端，不会启动新的进程
+```
+
+### 文件拷贝
+
+```bash
+docker cp <container>:<path> <host_path>  # 从容器内拷贝文件到主机上
+docker cp <host_path> <container>:<path>  # 从主机拷贝文件到容器内
+```
+
+## 数据卷 (Volume)
+
+```bash
+docker volume ls               # 查看所有数据卷
+docker volume create <volume>  # 创建数据卷
+docker volume inspect <volume> # 查看数据卷详细信息
+docker volume rm <volume>      # 删除数据卷
+docker volume prune            # 删除无用的数据卷
+```
+
+## 网络 (Network)
+
+```bash
+docker network ls              # 查看网络
+docker network create <network> # 创建网络
+docker network inspect <network> # 查看网络详情
+docker network connect <network> <container> # 连接容器到网络
+docker network disconnect <network> <container> # 断开容器网络
+docker network rm <network>    # 删除网络
+```
+
+## 系统清理
+
+```bash
+docker system prune  # 清理所有未使用的资源（镜像、容器、网络）
+docker system df     # 查看 Docker 磁盘使用情况
+```

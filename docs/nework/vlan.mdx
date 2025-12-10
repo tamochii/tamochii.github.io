@@ -90,8 +90,8 @@ import TabItem from '@theme/TabItem';
 
 以下是在思科设备上配置 VLAN 的基础命令。
 
-\<Tabs\>
-\<TabItem value="create" label="创建 VLAN" default\>
+<Tabs>
+<TabItem value="create" label="创建 VLAN" default>
 
 ```cisco
 Switch> enable
@@ -106,8 +106,8 @@ Switch(config)# vlan 20
 Switch(config-vlan)# name IT_Dept
 ```
 
-\</TabItem\>
-\<TabItem value="access" label="配置 Access 端口"\>
+</TabItem>
+<TabItem value="access" label="配置 Access 端口">
 
 ```cisco
 ! 将接口 GigabitEthernet0/1 分配给 VLAN 10
@@ -117,8 +117,8 @@ Switch(config-if)# switchport access vlan 10
 Switch(config-if)# no shutdown
 ```
 
-\</TabItem\>
-\<TabItem value="trunk" label="配置 Trunk 端口"\>
+</TabItem>
+<TabItem value="trunk" label="配置 Trunk 端口">
 
 ```cisco
 ! 配置上行链路为 Trunk 模式，允许所有 VLAN 通过
@@ -129,8 +129,8 @@ Switch(config-if)# switchport mode trunk
 Switch(config-if)# switchport trunk allowed vlan 10,20
 ```
 
-\</TabItem\>
-\</Tabs\>
+</TabItem>
+</Tabs>
 
 ## 总结
 
