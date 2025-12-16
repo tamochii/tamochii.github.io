@@ -1,0 +1,8 @@
+{
+  "label": "Podman",
+  "position": 5,
+  "link": {
+    "type": "generated-index",
+    "description": "关于Podman的使用笔记和相关知识。"
+  }
+}

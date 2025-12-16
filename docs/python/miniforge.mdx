@@ -68,7 +68,7 @@ brew install miniforge
 
 miniforge 的用法与 anaconda/miniconda 几乎完全一致，命令也是 `conda`。如果你安装了包含 Mamba 的版本，推荐使用 `mamba` 命令来代替 `conda install` 以获得更快的速度。
 
-### 1. 环境管理
+### 环境管理
 
 ```bash
 # 创建一个名为 myenv 的环境，指定 Python 版本
@@ -87,7 +87,7 @@ conda env list
 conda env remove -n myenv
 ```
 
-### 2. 包管理 (推荐使用 mamba)
+### 包管理 (推荐使用 mamba)
 
 虽然 `conda install` 依然可用，但 `mamba` 在解决依赖冲突时速度极快。
 
@@ -105,7 +105,7 @@ mamba update pandas
 mamba remove pandas
 ```
 
-### 3. 导出与重建环境
+### 导出与重建环境
 
 ```bash
 # 导出环境配置到 YAML 文件

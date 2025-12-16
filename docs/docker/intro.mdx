@@ -9,7 +9,7 @@ sidebar_position: 1
 > **适用系统：** Ubuntu 18.04/20.04/22.04/24.04 及 Debian 10/11/12  
 > **权限要求：** 请使用 `root` 用户或具有 `sudo` 权限的账号。
 
-## 1. 环境清理
+## 环境清理
 
 在安装新版本前，建议清理系统中可能存在的旧版本或冲突包。
 
@@ -19,7 +19,7 @@ for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker c
 done
 ```
 
-## 2. 安装 Docker Engine
+## 安装 Docker Engine
 
 我们提供两种方案，推荐使用方案 A（官方脚本+国内参数），简单且兼容性最好。
 
@@ -71,7 +71,7 @@ curl -fsSL https://get.docker.com | bash -s docker --mirror Aliyun
     sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
     ```
 
-## 3. 关键配置：镜像加速与代理
+## 关键配置：镜像加速与代理
 
 安装完成后，必须配置国内镜像加速，否则拉取镜像（如 `docker pull`）会极其缓慢或超时。
 
@@ -111,7 +111,7 @@ sudo systemctl daemon-reload
 sudo systemctl restart docker
 ```
 
-## 4. 非 Root 用户权限配置 (可选)
+## 非 Root 用户权限配置 (可选)
 
 如果你希望在普通用户（如 `ubuntu`）下直接运行 docker 命令，而不需要每次都输 `sudo`：
 
@@ -120,7 +120,7 @@ sudo usermod -aG docker $USER
 newgrp docker
 ```
 
-## 5. 验证安装
+## 验证安装
 
 运行 Hello World 容器来验证一切是否正常。
 

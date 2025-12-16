@@ -1,0 +1,8 @@
+{
+  "label": "Traefik",
+  "position": 8,
+  "link": {
+    "type": "generated-index",
+    "description": "关于Traefik的使用笔记和相关知识。"
+  }
+}

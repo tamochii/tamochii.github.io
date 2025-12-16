@@ -1,0 +1,131 @@
+---
+sidebar_position: 2
+---
+
+# Debian/Ubuntu 命令
+
+本文整理了 Debian 和 Ubuntu 系统中日常使用频率最高的 Bash 命令，涵盖了文件操作、系统管理、网络配置、软件安装等场景。掌握这些命令可以满足 99% 的日常运维需求。
+
+## 软件包管理 (APT)
+
+Debian 系发行版最核心的工具。
+
+```bash
+sudo apt update        # 更新软件包列表（安装软件前必做）
+sudo apt upgrade       # 升级所有已安装的软件包
+sudo apt install <包名> # 安装软件 (例如: sudo apt install git)
+sudo apt remove <包名>  # 卸载软件，保留配置文件
+sudo apt purge <包名>   # 卸载软件，同时删除配置文件
+sudo apt autoremove    # 自动清理不再需要的依赖包
+apt search <关键词>     # 搜索软件包
+apt show <包名>         # 查看软件包详细信息
+```
+
+## 文件与目录操作
+
+基础的文件管理命令。
+
+```bash
+ls -lh                 # 以易读格式(KB/MB)列出当前目录文件
+ls -a                  # 显示所有文件（包括隐藏文件）
+cd <目录>               # 切换目录 (cd .. 返回上一级, cd ~ 回到家目录)
+pwd                    # 显示当前工作目录路径
+mkdir -p <目录/子目录>   # 创建目录 (支持递归创建)
+rm -rf <文件/目录>       # 强制删除文件或目录（慎用！）
+cp -r <源> <目标>        # 复制文件或目录
+mv <源> <目标>           # 移动或重命名文件
+touch <文件名>          # 创建空文件或更新时间戳
+ln -s <源文件> <软链接>   # 创建软链接（快捷方式）
+```
+
+## 文件查看与处理
+
+```bash
+cat <文件>              # 显示文件全部内容
+less <文件>             # 分页查看文件 (按 q 退出)
+head -n 10 <文件>       # 查看文件开头 10 行
+tail -n 10 <文件>       # 查看文件末尾 10 行
+tail -f <文件>          # 实时追踪文件更新（常用于看日志）
+grep "关键词" <文件>     # 在文件中搜索关键词
+find / -name <文件名>   # 全盘搜索文件
+```
+
+## 系统信息与监控
+
+了解系统当前的运行状态。
+
+```bash
+uname -a               # 查看内核版本和系统架构
+lsb_release -a         # 查看发行版版本信息
+top                    # 实时显示进程和资源占用 (按 q 退出)
+htop                   # top 的增强版，界面更友好 (需安装)
+free -h                # 查看内存使用情况
+df -h                  # 查看磁盘空间使用情况
+du -sh <目录>           # 查看指定目录的大小
+uptime                 # 查看系统运行时间和负载
+dmesg | tail           # 查看内核日志（硬件/驱动报错）
+```
+
+## 服务管理 (Systemd)
+
+管理后台服务（如 Nginx, Docker, SSH）。
+
+```bash
+sudo systemctl start <服务>    # 启动服务
+sudo systemctl stop <服务>     # 停止服务
+sudo systemctl restart <服务>  # 重启服务
+sudo systemctl reload <服务>   # 重载配置（不中断服务）
+sudo systemctl enable <服务>   # 设置开机自启
+sudo systemctl disable <服务>  # 禁止开机自启
+sudo systemctl status <服务>   # 查看服务状态
+```
+
+## 网络操作
+
+```bash
+ip addr                # 查看网卡 IP 地址 (替代旧的 ifconfig)
+ip route               # 查看路由表
+ping <域名/IP>          # 测试网络连通性
+curl -I <URL>          # 获取 HTTP 头信息
+wget <URL>             # 下载文件
+ss -tuln               # 查看监听端口 (替代 netstat)
+ufw status             # 查看防火墙状态
+ufw allow <端口>        # 放行端口 (例如: ufw allow 80/tcp)
+```
+
+## 用户与权限
+
+```bash
+sudo su                # 切换到 root 用户
+su <用户名>             # 切换到指定用户
+useradd -m <用户名>     # 创建新用户并创建家目录
+passwd <用户名>         # 修改用户密码
+chmod 755 <文件>        # 修改文件权限 (r=4, w=2, x=1)
+chmod +x <文件>         # 给文件添加执行权限
+chown <用户>:<组> <文件> # 修改文件所有者和所属组
+whoami                 # 查看当前登录用户
+id <用户名>             # 查看用户 ID 和组信息
+```
+
+## 压缩与解压
+
+```bash
+# Tar (最常用)
+tar -czvf archive.tar.gz <目录>  # 压缩为 .tar.gz
+tar -xzvf archive.tar.gz        # 解压 .tar.gz
+
+# Zip
+zip -r archive.zip <目录>        # 压缩为 .zip
+unzip archive.zip               # 解压 .zip
+```
+
+## 实用快捷键
+
+*   **Tab**: 自动补全命令或文件名（神器，必须多用）。
+*   **Ctrl + C**: 终止当前正在运行的命令。
+*   **Ctrl + L**: 清屏 (等同于 `clear` 命令)。
+*   **Ctrl + A**: 光标移动到行首。
+*   **Ctrl + E**: 光标移动到行尾。
+*   **Ctrl + R**: 搜索历史命令。
+*   **history**: 查看所有历史命令。
+

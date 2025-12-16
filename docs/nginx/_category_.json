@@ -1,0 +1,8 @@
+{
+  "label": "Nginx",
+  "position": 7,
+  "link": {
+    "type": "generated-index",
+    "description": "关于Nginx的使用笔记和相关知识。"
+  }
+}

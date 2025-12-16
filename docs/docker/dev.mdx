@@ -1,0 +1,91 @@
+---
+sidebar_position: 4
+---
+
+# 容器开发与发布
+
+在完成 Dockerfile 的编写和镜像构建后，我们需要将镜像推送到远程仓库（Registry），以便在其他服务器或环境中拉取和部署。本文将介绍容器开发、标记和发布的标准流程。
+
+## 镜像命名规范
+
+在推送镜像之前，理解 Docker 的镜像命名规范至关重要。一个完整的镜像名称通常包含以下部分：
+
+`[Registry URL]/[Namespace]/[Repository]:[Tag]`
+
+*   **Registry URL**: 仓库地址。如果是 Docker Hub，默认为 `docker.io` (通常省略)。如果是私有仓库（如阿里云、Harbor），则必须写全（例如 `registry.cn-hangzhou.aliyuncs.com`）。
+*   **Namespace**: 命名空间。在 Docker Hub 上通常是你的**用户名**或**组织名**。
+*   **Repository**: 镜像仓库名，通常对应你的应用名称。
+*   **Tag**: 标签，用于版本控制（如 `v1.0`, `latest`, `stable`）。
+
+**示例**：
+*   `nginx:latest` (等同于 `docker.io/library/nginx:latest`)
+*   `tamochii/myapp:v1.0` (Docker Hub 用户 tamochii 的 myapp 镜像)
+*   `registry.example.com/team-a/backend:prod` (私有仓库)
+
+## 发布流程
+
+### 第一步：登录仓库
+
+在推送之前，必须先验证身份。
+
+```bash
+# 登录 Docker Hub
+docker login
+
+# 登录私有仓库
+docker login registry.example.com
+# 系统会提示输入用户名和密码
+```
+
+### 第二步：构建镜像 (Build)
+
+使用 `docker build` 命令从 Dockerfile 构建镜像。
+
+```bash
+# 格式：docker build -t <镜像名>:<标签> <上下文路径>
+docker build -t myapp:v1.0 .
+```
+
+### 第三步：标记镜像 (Tag)
+
+如果你构建的镜像名称没有包含仓库地址或用户名，你需要使用 `docker tag` 重新标记它，使其符合推送规范。
+
+```bash
+# 格式：docker tag <源镜像ID或名称> <目标镜像名称>
+
+# 将本地的 myapp:v1.0 标记为 Docker Hub 格式
+docker tag myapp:v1.0 tamochii/myapp:v1.0
+
+# 同时打上 latest 标签（推荐做法）
+docker tag myapp:v1.0 tamochii/myapp:latest
+```
+
+### 第四步：推送镜像 (Push)
+
+将标记好的镜像推送到远程仓库。
+
+```bash
+# 推送指定版本
+docker push tamochii/myapp:v1.0
+
+# 推送 latest 版本
+docker push tamochii/myapp:latest
+```
+
+## 常用命令汇总
+
+| 命令 | 说明 | 示例 |
+| :--- | :--- | :--- |
+| `docker login` | 登录镜像仓库 | `docker login` |
+| `docker logout` | 登出 | `docker logout` |
+| `docker build` | 构建镜像 | `docker build -t foo:1.0 .` |
+| `docker tag` | 给镜像打标签 | `docker tag foo:1.0 user/foo:1.0` |
+| `docker push` | 推送镜像到仓库 | `docker push user/foo:1.0` |
+| `docker pull` | 从仓库拉取镜像 | `docker pull user/foo:1.0` |
+
+## 最佳实践
+
+1.  **不要只使用 `latest`**：在生产环境中，尽量使用明确的版本号（如 `v1.2.3`）。`latest` 标签是可变的，可能导致不同时间拉取的镜像内容不一致。
+2.  **语义化版本控制**：遵循 [Semantic Versioning](https://semver.org/) (主版本号.次版本号.修订号)。
+3.  **多阶段构建**：在 Dockerfile 中使用多阶段构建来减小最终镜像的大小，只保留运行所需的产物。
+4.  **自动化构建**：利用 CI/CD 工具（如 GitHub Actions, Jenkins）自动执行 Build -> Tag -> Push 的流程，避免手动操作失误。

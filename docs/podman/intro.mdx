@@ -1,0 +1,123 @@
+---
+sidebar_position: 1
+---
+
+# Podman 安装
+
+Podman (Pod Manager) 是一个无守护进程、开源的 Linux 原生容器引擎，用于在 Linux 系统上开发、管理和运行 OCI 容器。它旨在作为 Docker 的直接替代品 ()。
+
+## Podman vs Docker
+
+| 特性 | Docker | Podman |
+| :--- | :--- | :--- |
+| **架构** | C/S 架构 (守护进程) | 无守护进程 (Fork/Exec) |
+| **权限** | 默认需要 Root | 支持 Rootless (非 Root 运行) |
+| **生态** | 完整的生态系统 | 兼容 Docker CLI，专注于运行 |
+| **启动** | 依赖 dockerd | 直接启动进程 |
+
+## 安装指南
+
+### Debian / Ubuntu
+
+在较新的版本中，Podman 已包含在官方仓库中。
+
+```bash
+# 更新仓库
+sudo apt update
+
+# 安装 Podman
+sudo apt install -y podman
+
+# 验证安装
+podman --version
+```
+
+### CentOS / RHEL / Fedora
+
+Podman 是 Red Hat 系发行版的默认容器引擎。
+
+```bash
+# 安装
+sudo dnf install -y podman
+
+# 验证
+podman info
+```
+
+### macOS
+
+macOS 需要通过 Homebrew 安装，并使用 QEMU 虚拟机运行 Linux 内核。
+
+```bash
+# 安装
+brew install podman
+
+# 初始化并启动虚拟机
+podman machine init
+podman machine start
+
+# 验证
+podman version
+```
+
+## 基础配置
+
+### 配置镜像加速
+
+Podman 默认从  和  拉取镜像。由于网络原因，通常需要配置国内镜像源。
+配置文件路径： (全局) 或  (用户)。
+
+```toml
+unqualified-search-registries = ["docker.io"]
+
+[[registry]]
+prefix = "docker.io"
+location = "docker.io"
+
+[[registry.mirror]]
+location = "docker.mirrors.ustc.edu.cn"  # 中科大源
+[[registry.mirror]]
+location = "hub-mirror.c.163.com"       # 网易源
+```
+
+### 设置 Docker 别名
+
+为了保持使用习惯，可以设置别名，让你继续敲 `docker` 命令，但实际执行的是 `podman`。
+
+```bash
+# 临时生效
+alias docker=podman
+
+# 永久生效 (添加到 .bashrc 或 .zshrc)
+echo "alias docker=podman" >> ~/.bashrc
+source ~/.bashrc
+```
+
+## 常用命令
+
+Podman 的命令与 Docker 几乎完全一致。
+
+```bash
+podman pull nginx          # 拉取镜像
+podman run -d -p 80:80 nginx # 运行容器
+podman ps                  # 查看运行中的容器
+podman images              # 查看镜像
+podman rm -f <container>   # 删除容器
+podman rmi <image>         # 删除镜像
+podman generate systemd --name <container> > <service>.service # 生成 Systemd 服务文件 (Podman 特有)
+```
+
+## Rootless 模式 (非 Root 运行)
+
+Podman 最强大的特性之一是允许普通用户运行容器，无需 。
+
+```bash
+# 以普通用户身份登录
+ssh user@server
+
+# 直接运行容器
+podman run -d -p 8080:80 nginx
+```
+
+> **注意**：Rootless 模式下，普通用户无法绑定 1024 以下的特权端口（如 80, 443）。需要绑定 8080 等高位端口，或配置  参数允许绑定特权端口。
+

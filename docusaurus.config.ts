@@ -46,7 +46,7 @@ const config: Config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+            'https://github.com/tamochii/doc/tree/main/',
         },
         blog: {
           path: './pi',
@@ -60,7 +60,7 @@ const config: Config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+            'https://github.com/tamochii/doc/tree/main/',
           // Useful options to enforce blogging best practices
           onInlineTags: 'warn',
           onInlineAuthors: 'warn',
@@ -104,19 +104,11 @@ const config: Config = {
       style: 'dark',
       links: [
         {
-          title: 'Links',
+          title: 'Others',
           items: [
             {
-              label: 'WWW',
-              href: 'https://www.tamochi.cn',
-            },
-            {
-              label: 'GitHub',
-              href: 'https://github.com/tamochii',
-            },
-            {
-              label: 'Bilibili',
-              href: 'https://space.bilibili.com/215003532',
+              label: 'Links',
+              href: 'https://link.tamochi.cn',
             },
           ],
         },
