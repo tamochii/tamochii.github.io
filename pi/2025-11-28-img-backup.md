@@ -1,7 +1,7 @@
 ---
 slug: img-backup
 title: 树莓派系统备份
-authors: [tamochi]
+authors: [Chius]
 ---
 
 树莓派 5 性能强大，常被用于运行 Home Assistant、NAS 或各种复杂的编译任务。一旦系统崩溃或 SD 卡损坏，重头配置将是一场噩梦。

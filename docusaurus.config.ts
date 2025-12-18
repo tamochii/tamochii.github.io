@@ -5,7 +5,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: 'tamochi\'s doc',
+  title: 'Chius\'s Doc',
   //tagline: '这里是tamochi的笔记库',
   favicon: 'img/favicon.ico',
 
@@ -80,9 +80,9 @@ const config: Config = {
       respectPrefersColorScheme: true,
     },
     navbar: {
-      title: 'tamochi\'s doc',
+      title: 'Chius\'s Doc',
       logo: {
-        alt: 'tamochi\'s logo',
+        alt: 'Chius\'s logo',
         src: 'img/logo.svg',
       },
       items: [
