@@ -101,7 +101,7 @@ const config: Config = {
       ],
     },
     footer: {
-      style: 'dark',
+      style: 'light',
       links: [
         {
           title: 'Others',
@@ -114,7 +114,7 @@ const config: Config = {
         },
       ],
       copyright: `版权所有 © ${new Date().getFullYear()} <a href="https://github.com/tamochii/doc"
-                    target="_blank" rel="noopener">doc.tamochi.cn</a> <br/> <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">鄂ICP备2025111741号-2</a>`,
+                    target="_blank" rel="noopener">doc.tamochi.cn</a> <br/>`,
     },
     prism: {
       theme: prismThemes.github,
